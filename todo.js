@@ -50,5 +50,19 @@ for (let i = 0; i < elements.length; i++) {
   } else {
     item.style.color = "black";
   }
-  console.log(num);
 }
+
+// ==================== 21/06/2023 ========================
+let task1 = document.querySelector('.list__item');
+task1.style.backgroundColor = 'yellow';
+
+let header = document.querySelector('.header__logo');
+
+header.onclick = function(){
+  console.log("Ejecutando onclick");
+}
+
+window.onload = function () {
+  console.log("Finalizado");
+}
+
