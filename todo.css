@@ -49,6 +49,22 @@ body, ul, li {
     width: 100%;
 }
 
+.container.container--centered {
+    align-items: center;
+}
+
+.container__add-task {
+    display: flex;
+    width: 200px;
+    margin-bottom: 5px;
+    justify-content: flex-end;
+}
+
+.container__add-task input {
+    font-size: 8px;
+}
+
+
 .title {
     text-align: center;
 }
@@ -65,7 +81,6 @@ body, ul, li {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    justify-content: flex-start;
     border-radius: 3px;
     padding: 3px;
     margin: 3px;
@@ -79,4 +94,14 @@ body, ul, li {
 
 .list__text {
     margin-left: 4px;
+    flex-grow: 1;
+}
+
+.item-checkbox {
+    cursor: pointer;
+}
+
+.item-delete-button {
+    font-size: 8px;
+    cursor: pointer;
 }
