@@ -1,68 +1,81 @@
-// let li = document.createElement("li");
+// Asignar atributos de otra manera: li.setAttribute("class", "list_item");
+// Devuelve el atributo: let atributo = li.getAttribute("class");
 
-// // Asignar atributos de otra manera
-// li.setAttribute("class", "list_item");
+// Tachar - Destachar
+function onCheckboxClick(event) {
+  // Valor del checked (false or true)
+  let checked = event.target.checked;
+  // Se accede al nodo padre y luego al nodo del texto
+  let texto = event.target.parentNode.querySelector('.list__text');
 
-// // Devuelve el atributo
-// let atributo = li.getAttribute("class");
+  if (checked === true) {
+    // Se tacha el texto de la tarea
+    texto.style.textDecoration = 'line-through';
+    texto.style.color = 'red';
+  } else {
+    texto.style.textDecoration = 'none';
+    texto.style.color = 'black';
+  }
+}
 
-// console.log(li);
-// console.log("Atributo: ", atributo);
+// Borrar tarea seleccionada
+function onDeleteButton(event) {
+  // Se obtiene el nombre de la tarea
+  let tarea = event.target.parentNode.querySelector('.list__text').innerText;
+  let borrar = window.confirm("¿Está seguro de eliminar: "+tarea+"?");
+  if (borrar) {
+    event.target.parentNode.remove();
+  }
+}
 
+// Crear nueva tarea
 function createTask(text) {
-  // Identificar elemento padre
-  let ul = document.querySelector("ul");
-
   // Crear elementos
   let li = window.document.createElement("li");
-  let input = document.createElement("input");
+  let checkbox = document.createElement("input");
   let div = document.createElement("div");
   let texto = document.createTextNode(text);
-
-  // Anidar elementos
-  li.appendChild(input);
-  li.appendChild(div);
-  div.appendChild(texto);
-  ul.appendChild(li);
+  let deleteButton = document.createElement("input");
 
   // Asignar propiedades
   li.className = "list__item";
-  input.type = "checkbox";
+  checkbox.type = "checkbox";
+  checkbox.className = "item-checkbox";
+  checkbox.addEventListener('click',onCheckboxClick);
   div.className = "list__text";
+  deleteButton.className = "item-delete-button";
+  deleteButton.type = "button";
+  deleteButton.value = "🗑";
+  deleteButton.addEventListener("click",onDeleteButton)
+
+  // Anidar elementos
+  div.appendChild(texto);
+  li.appendChild(checkbox);
+  li.appendChild(div);
+  li.appendChild(deleteButton);
 
   return li;
 }
 
-// Crear nuevas tareas
-createTask("Tarea 5");
-createTask("Tarea 6");
 
-// Seleccionar todos los elementos dentro de li
-let elements = document.getElementsByClassName("list__item");
+window.onload = () => {
+  let checkbox = document.querySelectorAll(".list__item > .item-checkbox");  // Selecciona todos los checkbox
+  let deleteButtons = document.querySelectorAll(".list__item > .item-delete-button");  // Selecciona todos los botones de eliminar tarea
+  let addTask = document.querySelector('.container__add-task');  // Agrega nueva tarea
+  let list = document.querySelector(".list");  // Identificar elemento padre
 
-for (let i = 0; i < elements.length; i++) {
-  let item = elements[i];
-  // Números aleatorio: 1 or 0
-  let num = Math.round(Math.random());
+  // Clic en checkbox
+  checkbox.forEach((checkbox) => {
+    checkbox.addEventListener("click", onCheckboxClick); // Call func onCheckboxClick
+  });
 
-  if (num == 1) {
-    item.style.color = "red";
-  } else {
-    item.style.color = "black";
+  // Clic en botón borrar
+  deleteButtons.forEach((deleteButtons) => {
+    deleteButtons.addEventListener("click", onDeleteButton); // Call func onDeleteButton
+  });
+
+  // Clic agregar tarea
+  addTask.onclick = () => {
+    list.appendChild(createTask("Tarea nueva")); // Crea nueva tarea
   }
-}
-
-// ==================== 21/06/2023 ========================
-let task1 = document.querySelector('.list__item');
-task1.style.backgroundColor = 'yellow';
-
-let header = document.querySelector('.header__logo');
-
-header.onclick = function(){
-  console.log("Ejecutando onclick");
-}
-
-window.onload = function () {
-  console.log("Finalizado");
-}
-
+};

@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    /* border: 1px solid red; */
 }
 
 body {
@@ -49,6 +50,22 @@ body, ul, li {
     width: 100%;
 }
 
+.container.container--centered {
+    align-items: center;
+}
+
+.container__add-task {
+    display: flex;
+    width: 200px;
+    justify-content: end;
+}
+
+.container__add-task input{
+    font-size: 10px;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
 .title {
     text-align: center;
 }
@@ -73,10 +90,24 @@ body, ul, li {
     width: 200px;
 }
 
+.list__item:hover {
+    background-color: yellow;
+}
+
 .list__item:last-child {
     margin-bottom: 40px;
 }
 
 .list__text {
     margin-left: 4px;
+    flex-grow: 1; /* Dar más espacio al texto */
+}
+
+.item-delete-button {
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.item-checkbox {
+    cursor: pointer;
 }
