@@ -43,6 +43,7 @@ function createTask(text) {
   checkbox.className = "item-checkbox";
   checkbox.addEventListener('click',onCheckboxClick);
   div.className = "list__text";
+  div.contentEditable = true;
   deleteButton.className = "item-delete-button";
   deleteButton.type = "button";
   deleteButton.value = "🗑";
