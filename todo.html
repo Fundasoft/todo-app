@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="todo.css" />
+    <script src="todo.js"></script>
     <title>Document</title>
 </head>
 <body class="todo-app">
@@ -14,22 +15,30 @@
     <div class="todo-list">
         <div class="container container--centered">
             <h1 class="title">TAREAS</h1>
+            <div class="container__add-task"><input type="button" value="Agregar tarea" /></div>
             <ul class="list">
                 <li class="list__item">
-                    <input type="checkbox"><div class="list__text">Tarea 1</div>
+                    <input class="item-checkbox" type="checkbox">
+                    <div class="list__text">Tarea 1</div>
+                    <input class="item-delete-button" type="button" value="🗑️" />
                 </li>
                 <li class="list__item">
-                    <input type="checkbox"><div class="list__text">Tarea 2</div>
+                    <input class="item-checkbox" type="checkbox">
+                    <div class="list__text">Tarea 2</div>
+                    <input class="item-delete-button" type="button" value="🗑️" />
                 </li>
                 <li class="list__item">
-                    <input type="checkbox"><div class="list__text">Tarea 3</div>
+                    <input class="item-checkbox" type="checkbox">
+                    <div class="list__text">Tarea 3</div>
+                    <input class="item-delete-button" type="button" value="🗑️" />
                 </li>
                 <li class="list__item">
-                    <input type="checkbox"><div class="list__text">Tarea 4</div>
+                    <input class="item-checkbox" type="checkbox">
+                    <div class="list__text">Tarea 4</div>
+                    <input class="item-delete-button" type="button" value="🗑️" />
                 </li>
             </ul>
         </div>
     </div>
 </body>
-<script src="todo.js"></script>
 </html>
