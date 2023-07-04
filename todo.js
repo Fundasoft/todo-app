@@ -17,6 +17,15 @@ function onDeleteButton(event) {
     }
 }
 
+function onBlurText(event, texts) {
+    if(texts[event.target.parentNode.id] === event.target.innerText) {
+        console.log('No hay cambios');
+    } else {
+        console.log('Hay cambios');
+        texts[event.target.parentNode.id] = event.target.innerText;
+    }
+}
+
 function createTask(text) {
     var li = document.createElement('li');
     var checkbox = document.createElement('input');
@@ -45,8 +54,9 @@ function createTask(text) {
 window.onload = () => {
     var checkboxs = document.querySelectorAll('.list__item > .item-checkbox');
     var deleteButtons = document.querySelectorAll('.list__item > .item-delete-button');
-    var addTask = document.querySelector('.container__add-task');
+    var addTask = document.querySelector('.container__add-task > .add-task');
     var list = document.querySelector('.list');
+    var listTexts = document.querySelectorAll('.list__text');
     
     checkboxs.forEach(checkbox => {
         checkbox.addEventListener('click', onCheckboxClick);
@@ -58,5 +68,12 @@ window.onload = () => {
 
     addTask.addEventListener('click', () => {
         list.appendChild(createTask('Nueva tarea'));
+    });
+
+    var texts = [];
+
+    listTexts.forEach(listText => {
+        texts.push(listText.innerText);
+        listText.addEventListener('blur', (event) => onBlurText(event, texts));
     });
 }
