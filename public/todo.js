@@ -57,6 +57,8 @@ window.onload = () => {
     var addTask = document.querySelector('.container__add-task > .add-task');
     var list = document.querySelector('.list');
     var listTexts = document.querySelectorAll('.list__text');
+
+    console.log(axios.get('http://localhost:3000/todos?user=1').then(respuesta => console.log(respuesta.data.results)));
     
     checkboxs.forEach(checkbox => {
         checkbox.addEventListener('click', onCheckboxClick);
