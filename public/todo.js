@@ -1,11 +1,24 @@
 function onCheckboxClick(event) {
     var checked = event.target.checked;
+    var id = event.target.parentNode.id;
     if (checked === true) {
-        event.target.parentNode.querySelector('.list__text')
-            .style.textDecoration = 'line-through';
+        axios.put(`http://localhost:3000/todos/${id}?user=1`, {
+            done: 1,
+        }).then(() => {
+            event.target.parentNode.querySelector('.list__text')
+                .style.textDecoration = 'line-through';
+        }).catch(() => {
+            event.target.checked = false;
+        });
     } else {
-        event.target.parentNode.querySelector('.list__text')
-            .style.textDecoration = 'none';
+        axios.put(`http://localhost:3000/todos/${id}?user=1`, {
+            done: 0,
+        }).then(() => {
+            event.target.parentNode.querySelector('.list__text')
+                .style.textDecoration = 'none';
+        }).catch(() => {
+            event.target.checked = true;
+        }); 
     }
 }
 
@@ -26,7 +39,7 @@ function onBlurText(event, texts) {
     }
 }
 
-function createTask(text) {
+function createTask(id, text, done) {
     var li = document.createElement('li');
     var checkbox = document.createElement('input');
     var div = document.createElement('div');
@@ -34,6 +47,7 @@ function createTask(text) {
     var deleteButton = document.createElement('input');
 
     li.className = 'list__item';
+    li.id = id;
     checkbox.type = 'checkbox';
     checkbox.className = 'item-checkbox';
     checkbox.addEventListener('click', onCheckboxClick);
@@ -42,6 +56,11 @@ function createTask(text) {
     deleteButton.className = 'item-delete-button';
     deleteButton.addEventListener('click', onDeleteButton);
     div.className = 'list__text';
+
+    if (done === 1) {
+        checkbox.checked = true;
+        div.style.textDecoration = 'line-through';
+    }
 
     div.appendChild(texto);
     li.appendChild(checkbox);
@@ -58,24 +77,20 @@ window.onload = () => {
     var list = document.querySelector('.list');
     var listTexts = document.querySelectorAll('.list__text');
 
-    console.log(axios.get('http://localhost:3000/todos?user=1').then(respuesta => console.log(respuesta.data.results)));
-    
-    checkboxs.forEach(checkbox => {
-        checkbox.addEventListener('click', onCheckboxClick);
+    axios.get('http://localhost:3000/todos?user=1').then(respuesta => {
+        respuesta.data.results.map(task => {
+            var taskDOM = createTask(task.id, task.description, task.done);
+            list.appendChild(taskDOM);
+        });
     });
-
-    deleteButtons.forEach(deleteButton => {
-        deleteButton.addEventListener('click', onDeleteButton);
-    })
 
     addTask.addEventListener('click', () => {
         list.appendChild(createTask('Nueva tarea'));
     });
 
-    var texts = [];
-
-    listTexts.forEach(listText => {
-        texts.push(listText.innerText);
-        listText.addEventListener('blur', (event) => onBlurText(event, texts));
-    });
+    // var texts = [];
+    // listTexts.forEach(listText => {
+    //     texts.push(listText.innerText);
+    //     listText.addEventListener('blur', (event) => onBlurText(event, texts));
+    // });
 }
