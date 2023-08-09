@@ -65,6 +65,7 @@ window.onload = () => {
   let addTask = document.querySelector('.container__add-task');  // Agrega nueva tarea
   let list = document.querySelector(".list");  // Identificar elemento padre
 
+  console.log(axios.get('http://localhost:3000/todos/?user=1').then(res => console.log(res.data.results)));
   // Clic en checkbox
   checkbox.forEach((checkbox) => {
     checkbox.addEventListener("click", onCheckboxClick); // Call func onCheckboxClick

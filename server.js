@@ -1,25 +1,23 @@
 // Clase de 2023-08-02
-// $ npm i express
 const express = require('express');
+const path = require('path');
 const app = express();
 
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // app todo.html
 app.use('/app', (req, res) => {
-    res.sendFile(__dirname + '/todo.html')
+    res.sendFile(__dirname + '/public/todo.html')
 });
 
-// Styles
-app.use('/styles', (req, res) => {
-    res.sendFile(__dirname + '/todo.css')
-});
 
 app.use(function (err, req, res, next) { // middleware de error
   console.log(err);
   res.send('Algo salió mal');
 });
 
-app.listen(4000, function() {
+app.listen(3001, function() {
   console.log('¡El servidor web está en servicio!');
 });
