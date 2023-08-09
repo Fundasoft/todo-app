@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Fundasoft/todo-app/issues"
   },
-  "homepage": "https://github.com/Fundasoft/todo-app#readme"
+  "homepage": "https://github.com/Fundasoft/todo-app#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
