@@ -29,7 +29,7 @@ function onDeleteButton(event) {
 }
 
 // Crear nueva tarea
-function createTask(text) {
+function createTask(text, done) {
   // Crear elementos
   let li = window.document.createElement("li");
   let checkbox = document.createElement("input");
@@ -47,7 +47,14 @@ function createTask(text) {
   deleteButton.className = "item-delete-button";
   deleteButton.type = "button";
   deleteButton.value = "🗑";
-  deleteButton.addEventListener("click",onDeleteButton)
+  deleteButton.addEventListener("click",onDeleteButton);
+
+  // Marcar taras ya hechas
+  if (done === 1){
+    checkbox.checked = true;
+    div.style.textDecoration = 'line-through'; // tachar texto
+    div.style.color = 'red';
+  }
 
   // Anidar elementos
   div.appendChild(texto);
@@ -60,12 +67,21 @@ function createTask(text) {
 
 
 window.onload = () => {
+  let url_TodoAPI = 'http://localhost:3000/todos/?user=1';
   let checkbox = document.querySelectorAll(".list__item > .item-checkbox");  // Selecciona todos los checkbox
   let deleteButtons = document.querySelectorAll(".list__item > .item-delete-button");  // Selecciona todos los botones de eliminar tarea
   let addTask = document.querySelector('.container__add-task');  // Agrega nueva tarea
   let list = document.querySelector(".list");  // Identificar elemento padre
 
-  console.log(axios.get('http://localhost:3000/todos/?user=1').then(res => console.log(res.data.results)));
+  // Mostrar las tareas de la base de datos en el DOM
+  axios.get(url_TodoAPI).then(respuesta => {
+    respuesta.data.results.map( task => {
+      let taskDOM = createTask(task.description, task.done); // Descripción de la tarea
+      list.appendChild(taskDOM); // Mostrar las tareas de la DB
+    })
+  });
+  
+
   // Clic en checkbox
   checkbox.forEach((checkbox) => {
     checkbox.addEventListener("click", onCheckboxClick); // Call func onCheckboxClick
