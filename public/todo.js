@@ -118,6 +118,15 @@ window.onload = () => {
     })
   });
   
+  // Clic en checkbox
+  checkbox.forEach((checkbox) => {
+    checkbox.addEventListener("click", onCheckboxClick); // Call func onCheckboxClick
+  });
+
+  // Clic en botón borrar
+  deleteButtons.forEach((deleteButtons) => {
+    deleteButtons.addEventListener("click", onDeleteButton); // Call func onDeleteButton
+  });
 
   // Clic agregar tarea
   // addTask.onclick = () => {
@@ -135,4 +144,4 @@ window.onload = () => {
         }
       }
     });
-};
+}
