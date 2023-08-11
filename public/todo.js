@@ -2,7 +2,6 @@
 // Devuelve el atributo: let atributo = li.getAttribute("class");
 
 
-
 // Tachar - Destachar
 function onCheckboxClick(event) {
   let id = event.target.parentNode.id; // Obtener id de cada tarea
@@ -10,15 +9,17 @@ function onCheckboxClick(event) {
   // Valor del checked (false or true)
   let checked = event.target.checked;
   // Se accede al nodo padre y luego al nodo del texto
-  let texto = event.target.parentNode.querySelector('.list__text');
+  let listText = event.target.parentNode.querySelector('.list__text');
   let url_todoapi = `http://localhost:3000/todos/${id}?user=1`;
 
   if (checked === true) {
     axios.put(url_todoapi, {
       done: 1,
     }).then(() => {
-      texto.style.textDecoration = 'line-through'; // Se tacha el texto de la tarea
-      texto.style.color = 'red';
+      listText.style.textDecoration = 'line-through'; // Se tacha el texto de la tarea
+      listText.style.color = 'red';
+      listText.contentEditable = false;
+      listText.style.cursor = 'default';
     }).catch(() => {
       event.target.checked = false;
     });
@@ -27,8 +28,10 @@ function onCheckboxClick(event) {
     axios.put(url_todoapi, {
       done: 0,
     }).then(() => {
-      texto.style.textDecoration = 'none'; 
-      texto.style.color = 'black';
+      listText.style.textDecoration = 'none'; 
+      listText.style.color = 'black';
+      listText.contentEditable = true;
+      listText.style.cursor = 'text';
     }).catch(() => {
       event.target.checked = true;
     });
@@ -80,6 +83,8 @@ function createTask(id, text, done) {
     checkbox.checked = true;
     div.style.textDecoration = 'line-through'; // tachar texto
     div.style.color = 'red';
+    div.contentEditable = false;
+    div.style.cursor = 'default';
   }
 
   // Anidar elementos
