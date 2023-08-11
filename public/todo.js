@@ -12,13 +12,12 @@ function onCheckboxClick(event) {
   // Se accede al nodo padre y luego al nodo del texto
   let texto = event.target.parentNode.querySelector('.list__text');
   let url_todoapi = `http://localhost:3000/todos/${id}?user=1`;
-  
+
   if (checked === true) {
     axios.put(url_todoapi, {
       done: 1,
     }).then(() => {
-      // Se tacha el texto de la tarea
-      texto.style.textDecoration = 'line-through';
+      texto.style.textDecoration = 'line-through'; // Se tacha el texto de la tarea
       texto.style.color = 'red';
     }).catch(() => {
       event.target.checked = false;
@@ -28,8 +27,7 @@ function onCheckboxClick(event) {
     axios.put(url_todoapi, {
       done: 0,
     }).then(() => {
-      // Se tacha el texto de la tarea
-      texto.style.textDecoration = 'none';
+      texto.style.textDecoration = 'none'; 
       texto.style.color = 'black';
     }).catch(() => {
       event.target.checked = true;
@@ -37,13 +35,21 @@ function onCheckboxClick(event) {
   }
 }
 
+
 // Borrar tarea seleccionada
 function onDeleteButton(event) {
-  // Se obtiene el nombre de la tarea
-  let tarea = event.target.parentNode.querySelector('.list__text').innerText;
-  let borrar = window.confirm("¿Está seguro de eliminar: "+tarea+"?");
+  let id = event.target.parentNode.id; // Obtener id la tarea
+  let url_delete = `http://localhost:3000/todos/${id}?user=1`;
+  let tarea = event.target.parentNode.querySelector('.list__text').innerText; // Se obtiene el nombre de la tarea
+
+  let borrar = window.confirm(`¿Está seguro de eliminar: ${tarea}?`);
   if (borrar) {
-    event.target.parentNode.remove();
+    axios.delete(url_delete).then( () => {   // Eliminar de BD
+      event.target.parentNode.remove();      // Eliminar del DOM
+      console.log(`Tarea: ${tarea}, ELIMINADA!!!`);
+    }).catch( () => {
+      alert(`No se pudo eliminar la tarea`);
+    });
   }
 }
 
