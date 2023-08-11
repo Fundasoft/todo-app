@@ -47,12 +47,18 @@ function onDeleteButton(event) {
 
   let borrar = window.confirm(`¿Está seguro de eliminar: ${tarea}?`);
   if (borrar) {
-    axios.delete(url_delete).then( () => {   // Eliminar de BD
+    let newTaskDOM = document.querySelector('#new');
+    if (newTaskDOM === null) {
+      axios.delete(url_delete).then( () => {   // Eliminar de BD
+        event.target.parentNode.remove();      // Eliminar del DOM
+        console.log(`Tarea: ${tarea}, ELIMINADA!!!`);
+      }).catch( () => {
+        alert(`No se pudo eliminar la tarea`);
+      });
+    } else {
+      // Borra la tarea del DOM que no está en la BD
       event.target.parentNode.remove();      // Eliminar del DOM
-      console.log(`Tarea: ${tarea}, ELIMINADA!!!`);
-    }).catch( () => {
-      alert(`No se pudo eliminar la tarea`);
-    });
+    }
   }
 }
 
@@ -113,18 +119,20 @@ window.onload = () => {
   });
   
 
-  // Clic en checkbox
-  checkbox.forEach((checkbox) => {
-    checkbox.addEventListener("click", onCheckboxClick); // Call func onCheckboxClick
-  });
-
-  // Clic en botón borrar
-  deleteButtons.forEach((deleteButtons) => {
-    deleteButtons.addEventListener("click", onDeleteButton); // Call func onDeleteButton
-  });
-
   // Clic agregar tarea
-  addTask.onclick = () => {
-    list.appendChild(createTask("Tarea nueva")); // Crea nueva tarea
-  }
+  // addTask.onclick = () => {
+    addTask.addEventListener('click', () => {
+      let task = document.querySelector('#new');
+      if (task === null) {
+        list.appendChild(createTask('new','Tarea nueva',0)); // Crea nueva tarea
+
+      } else {
+        ok = window.alert('Ya hay una tarea vacía creada');
+        if (ok === undefined) {
+          // task.style.backgroundColor = 'rgb(255,0,0)';
+          // task.style.color = 'yellow';
+          task.style.boxShadow = '1px 1px 1px 9000px rgba(0,0,0,0.6)';
+        }
+      }
+    });
 };
