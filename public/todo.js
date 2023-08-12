@@ -11,6 +11,7 @@ function onCheckboxClick(event) {
   // Se accede al nodo padre y luego al nodo del texto
   let listText = event.target.parentNode.querySelector('.list__text');
   let url_todoapi = `http://localhost:3000/todos/${id}?user=1`;
+  background_gray(false);
 
   if (checked === true) {
     axios.put(url_todoapi, {
@@ -47,6 +48,7 @@ function onDeleteButton(event) {
 
   let borrar = window.confirm(`¿Está seguro de eliminar: ${tarea}?`);
   if (borrar) {
+    background_gray(false);
     let newTaskDOM = document.querySelector('#new');
     if (newTaskDOM === null) {
       axios.delete(url_delete).then( () => {   // Eliminar de BD
@@ -61,6 +63,45 @@ function onDeleteButton(event) {
     }
   }
 }
+
+// Detector de cambios en el nombre de las tareas
+function onBlurText(event, texts) {
+  let id = event.target.parentNode.id;
+  let newText = event.target.innerText;
+  // let task_background_gray = document.querySelector('#new'); // Task id new
+
+  if (texts.get(id) !== newText) {
+    if (id === 'new') {
+      axios.post(`http://localhost:3000/todos/?user=1`, {
+        description: newText,
+      }).then(results => {
+        texts.delete(id); // Borra el id new
+        texts.set(results.data.id, results.data.description);
+        background_gray(false);
+        event.target.parentNode.id = results.data.id; // Cambia el id new por uno de DB
+      });
+
+    } else {
+      axios.put(`http://localhost:3000/todos/${id}?user=1`, {
+        description: newText,
+      })
+      texts.delete(id);
+      texts.set(id, newText);
+      background_gray(false);
+   }
+  }
+}
+
+// Colocar / Quitar fondo gris
+function background_gray(opc) {
+  let task = document.querySelector('#new');
+  if (opc) {
+    task.style.boxShadow = '10px 1px 1px 9000px rgba(0,0,0,0.6)'; // Fondo gris
+  } else if (task !== null){
+    task.style.boxShadow = ''; // Quitar fondo gris
+  }
+}
+
 
 // Crear nueva tarea
 function createTask(id, text, done) {
@@ -104,6 +145,7 @@ function createTask(id, text, done) {
 
 
 window.onload = () => {
+  let texts = new Map();
   let url_TodoAPI = `http://localhost:3000/todos/?user=1`;
   let checkbox = document.querySelectorAll(".list__item > .item-checkbox");  // Selecciona todos los checkbox
   let deleteButtons = document.querySelectorAll(".list__item > .item-delete-button");  // Selecciona todos los botones de eliminar tarea
@@ -114,8 +156,14 @@ window.onload = () => {
   axios.get(url_TodoAPI).then(respuesta => {
     respuesta.data.results.map( task => {
       let taskDOM = createTask(task.id, task.description, task.done); // Descripción de la tarea
+      texts.set(`${task.id}`, task.description);
       list.appendChild(taskDOM); // Mostrar las tareas de la DB
+    });
+    let listTexts = document.querySelectorAll('.list__text');
+    listTexts.forEach(listText => {
+      listText.addEventListener('blur',(event) => onBlurText(event, texts));
     })
+
   });
   
   // Clic en checkbox
@@ -131,16 +179,20 @@ window.onload = () => {
   // Clic agregar tarea
   // addTask.onclick = () => {
     addTask.addEventListener('click', () => {
+      let defaultText = 'Nueva tarea';
       let task = document.querySelector('#new');
       if (task === null) {
-        list.appendChild(createTask('new','Tarea nueva',0)); // Crea nueva tarea
+        let newTask = createTask('new',defaultText,0);
+        texts.set('new',defaultText);
+        newTask.querySelector('.list__text').addEventListener('blur',(event) => onBlurText(event, texts));
+        list.appendChild(newTask); // Crea nueva tarea
+        background_gray(false);
 
       } else {
         ok = window.alert('Ya hay una tarea vacía creada');
         if (ok === undefined) {
-          // task.style.backgroundColor = 'rgb(255,0,0)';
-          // task.style.color = 'yellow';
-          task.style.boxShadow = '1px 1px 1px 9000px rgba(0,0,0,0.6)';
+          task.getElementsByClassName("list__text")[0].focus();
+          background_gray(true);
         }
       }
     });
