@@ -13,7 +13,7 @@ function onCheckboxClick(event) {
   let url_todoapi = `http://localhost:3000/todos/${id}?user=1`;
   background_gray(false);
 
-  if (checked === true) {
+  if (checked === true && id !== 'new') {
     axios.put(url_todoapi, {
       done: 1,
     }).then(() => {
@@ -25,7 +25,7 @@ function onCheckboxClick(event) {
       event.target.checked = false;
     });
 
-  } else {
+  } else if (id !== 'new') {
     axios.put(url_todoapi, {
       done: 0,
     }).then(() => {
@@ -36,6 +36,8 @@ function onCheckboxClick(event) {
     }).catch(() => {
       event.target.checked = true;
     });
+  } else {
+    event.target.checked = false;
   }
 }
 
@@ -49,11 +51,10 @@ function onDeleteButton(event) {
   let borrar = window.confirm(`¿Está seguro de eliminar: ${tarea}?`);
   if (borrar) {
     background_gray(false);
-    let newTaskDOM = document.querySelector('#new');
-    if (newTaskDOM === null) {
+    
+    if (newTaskCreated === false) {
       axios.delete(url_delete).then( () => {   // Eliminar de BD
         event.target.parentNode.remove();      // Eliminar del DOM
-        console.log(`Tarea: ${tarea}, ELIMINADA!!!`);
       }).catch( () => {
         alert(`No se pudo eliminar la tarea`);
       });
@@ -68,7 +69,6 @@ function onDeleteButton(event) {
 function onBlurText(event, texts) {
   let id = event.target.parentNode.id;
   let newText = event.target.innerText;
-  // let task_background_gray = document.querySelector('#new'); // Task id new
 
   if (texts.get(id) !== newText) {
     if (id === 'new') {
@@ -97,9 +97,17 @@ function background_gray(opc) {
   let task = document.querySelector('#new');
   if (opc) {
     task.style.boxShadow = '10px 1px 1px 9000px rgba(0,0,0,0.6)'; // Fondo gris
+    task.getElementsByClassName("list__text")[0].focus(); // focus
   } else if (task !== null){
     task.style.boxShadow = ''; // Quitar fondo gris
   }
+}
+
+// Verificar si hay una Nueva Tarea Creada 
+function newTaskCreated() {
+  let task = document.querySelector('#new');
+  if (task !== null)  return true;
+  return false;
 }
 
 
@@ -180,18 +188,17 @@ window.onload = () => {
   // addTask.onclick = () => {
     addTask.addEventListener('click', () => {
       let defaultText = 'Nueva tarea';
-      let task = document.querySelector('#new');
-      if (task === null) {
+      
+      if (newTaskCreated() === false) {
         let newTask = createTask('new',defaultText,0);
         texts.set('new',defaultText);
         newTask.querySelector('.list__text').addEventListener('blur',(event) => onBlurText(event, texts));
         list.appendChild(newTask); // Crea nueva tarea
-        background_gray(false);
+        background_gray(true);
 
       } else {
         ok = window.alert('Ya hay una tarea vacía creada');
         if (ok === undefined) {
-          task.getElementsByClassName("list__text")[0].focus();
           background_gray(true);
         }
       }
