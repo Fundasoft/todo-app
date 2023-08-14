@@ -84,7 +84,8 @@ function onBlurText(event, texts) {
   let id = event.target.parentNode.id;
   let newText = event.target.innerText;
 
-  if (texts.get(id) !== newText) {
+  // Si hay cambios (textos) y no es texto vacío
+  if (texts.get(id) !== newText && newText.trim() !== '') {
     if (id === 'new') { // Si Nueva tarea está creada
       axios.post(`http://localhost:3000/todos/?user=1`, {
         description: newText,
