@@ -21,6 +21,7 @@ function onCheckboxClick(event) {
       listText.style.color = 'red';
       listText.contentEditable = false;
       listText.style.cursor = 'default';
+      alert_sweet(`¡${listText.innerText}: OK!`,'success');
     }).catch(() => {
       event.target.checked = false;
     });
@@ -33,6 +34,7 @@ function onCheckboxClick(event) {
       listText.style.color = 'black';
       listText.contentEditable = true;
       listText.style.cursor = 'text';
+      alert_sweet(`¡${listText.innerText}: Pendiente!`,'info');
     }).catch(() => {
       event.target.checked = true;
     });
@@ -47,22 +49,34 @@ function onDeleteButton(event) {
   let id = event.target.parentNode.id; // Obtener id la tarea
   let url_delete = `http://localhost:3000/todos/${id}?user=1`;
   let tarea = event.target.parentNode.querySelector('.list__text').innerText; // Se obtiene el nombre de la tarea
+  
+  // Alert Delete
+  Swal.fire({
+    title: '¿Quieres borrar la tarea',
+    text: `${tarea}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, borrar!'
+  }).then((result) => {
 
-  let borrar = window.confirm(`¿Está seguro de eliminar: ${tarea}?`);
-  if (borrar) {
-    background_gray(false);
-    
-    if (newTaskCreated === false) {
-      axios.delete(url_delete).then( () => {   // Eliminar de BD
-        event.target.parentNode.remove();      // Eliminar del DOM
-      }).catch( () => {
-        alert(`No se pudo eliminar la tarea`);
-      });
-    } else {
-      // Borra la tarea del DOM que no está en la BD
-      event.target.parentNode.remove();      // Eliminar del DOM
+    if (result.isConfirmed) {
+      background_gray(false); // Quitar fondo gris
+      if (id !== 'new') {
+        axios.delete(url_delete).then( () => {   // Eliminar de BD
+          event.target.parentNode.remove();      // Eliminar del DOM
+        }).catch( () => {
+          alert_sweet('No se puedo eliminar la tarea','error');
+        });
+
+      } else {
+        event.target.parentNode.remove(); // Borra la tarea del DOM que no está en la BD
+      }
+      alert_sweet(`Tarea: ${tarea}, eliminada!`,'success',false, true);
     }
-  }
+
+  })
 }
 
 // Detector de cambios en el nombre de las tareas
@@ -71,7 +85,7 @@ function onBlurText(event, texts) {
   let newText = event.target.innerText;
 
   if (texts.get(id) !== newText) {
-    if (id === 'new') {
+    if (id === 'new') { // Si Nueva tarea está creada
       axios.post(`http://localhost:3000/todos/?user=1`, {
         description: newText,
       }).then(results => {
@@ -80,6 +94,7 @@ function onBlurText(event, texts) {
         background_gray(false);
         event.target.parentNode.id = results.data.id; // Cambia el id new por uno de DB
       });
+      alert_sweet('Tarea ingresada con éxito!','success');
 
     } else {
       axios.put(`http://localhost:3000/todos/${id}?user=1`, {
@@ -88,11 +103,12 @@ function onBlurText(event, texts) {
       texts.delete(id);
       texts.set(id, newText);
       background_gray(false);
+      alert_sweet('Tarea actualiada!','success');
    }
   }
 }
 
-// Colocar / Quitar fondo gris
+// Colocar / Quitar:  fondo gris y focus
 function background_gray(opc) {
   let task = document.querySelector('#new');
   if (opc) {
@@ -151,6 +167,17 @@ function createTask(id, text, done) {
   return li;
 }
 
+// SweetAlert2
+function alert_sweet(text, type, time = 1600, boton = false) {
+  Swal.fire({
+    position: 'top-end',
+    icon: type,
+    title: text,
+    showConfirmButton: boton,
+    timer: time
+  });
+}
+
 
 window.onload = () => {
   let texts = new Map();
@@ -197,10 +224,11 @@ window.onload = () => {
         background_gray(true);
 
       } else {
-        ok = window.alert('Ya hay una tarea vacía creada');
-        if (ok === undefined) {
-          background_gray(true);
-        }
+        // Callback
+        setTimeout(function(){
+          alert_sweet('Ya tienes una nueva tarea creada!','warning',2000);
+        }, 500);
+        setTimeout(background_gray(true),1000); // background_gray es la función myCallback
       }
     });
 }
